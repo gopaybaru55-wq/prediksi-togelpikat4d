@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PIKAT4D — Prediksi &amp; Jadwal Pasaran Terlengkap</title>
+<meta name="description" content="Jadwal tutup, jam undi, dan prediksi angka seluruh pasaran dalam satu halaman, diperbarui langsung dari panel admin." />
+<meta property="og:title" content="PIKAT4D — Prediksi & Jadwal Pasaran Terlengkap" />
+<meta property="og:description" content="Jadwal tutup, jam undi, dan prediksi angka seluruh pasaran dalam satu halaman." />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="https://i.imgur.com/iAA4oVW.png" type="image/png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --ink:#1e3a2c; --bg:#eefaf1; --card:#ffffff;
+  --primary:#2f8f5b; --primary-fg:#f7fffa;
+  --secondary:#d7fb63; --muted:#5c7568;
+  --success:#2f8f5b; --warning:#ffd23f; --info:#7ec8ff; --danger:#e5484d;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Space Grotesk",system-ui,sans-serif}
+h1,h2,h3,.display{font-family:"Archivo",system-ui,sans-serif;font-weight:900;letter-spacing:-.02em;margin:0}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1280px;margin:0 auto;padding:0 16px}
+.nb{border:3px solid var(--ink);border-radius:14px;background:var(--card)}
+.sh{box-shadow:5px 5px 0 var(--ink)}
+.sh-sm{box-shadow:3px 3px 0 var(--ink)}
+.press{transition:transform .08s ease, box-shadow .08s ease;cursor:pointer}
+.press:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+.label{font-family:"Archivo",sans-serif;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+.row{display:flex;align-items:center;gap:12px}
+.grid{display:grid;gap:16px}
+button{font:inherit;color:inherit}
+input{font:inherit}
+
+header.site{position:sticky;top:0;z-index:40;border-bottom:3px solid var(--ink);background:rgba(238,250,241,.95);backdrop-filter:blur(6px)}
+header .wrap{display:flex;align-items:center;gap:12px;padding-top:12px;padding-bottom:12px}
+nav.desktop{display:none;gap:4px;margin-left:16px}
+nav.desktop a{padding:8px 12px;border:3px solid transparent;border-radius:10px}
+nav.desktop a:hover{border-color:var(--ink);background:var(--secondary)}
+.actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{display:inline-block;padding:10px 16px;border:3px solid var(--ink);border-radius:14px;box-shadow:3px 3px 0 var(--ink)}
+.btn.primary{background:var(--primary);color:var(--primary-fg)}
+.btn.sec{background:var(--secondary)}
+.burger{display:inline-flex;padding:8px}
+#mobileNav{display:none;border-top:3px solid var(--ink);background:var(--card);padding:12px 16px}
+#mobileNav a{display:flex;justify-content:space-between;padding:10px 12px;margin-bottom:8px;border:3px solid var(--ink);border-radius:12px;background:var(--bg);box-shadow:3px 3px 0 var(--ink);font-weight:700}
+@media(min-width:1024px){nav.desktop{display:flex}.burger{display:none}}
+
+.marquee{overflow:hidden;border-bottom:3px solid var(--ink);background:var(--secondary);padding:8px 0}
+.marquee-track{display:flex;gap:48px;white-space:nowrap;animation:mq 22s linear infinite}
+@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+section{padding:24px 0}
+.hero{display:grid;gap:20px;align-items:start}
+@media(min-width:1024px){.hero{grid-template-columns:1.25fr 1fr}}
+.chip{display:inline-block;background:var(--secondary);border:3px solid var(--ink);border-radius:12px;padding:4px 12px;box-shadow:3px 3px 0 var(--ink)}
+.pad{padding:20px}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.metric{border:3px solid var(--ink);border-radius:12px;background:var(--bg);padding:12px}
+.metric .v{font-family:"Archivo";font-weight:900;font-size:20px;font-variant-numeric:tabular-nums}
+.count{border:3px solid var(--ink);border-radius:12px;background:var(--secondary);padding:16px;text-align:center;box-shadow:3px 3px 0 var(--ink)}
+.count .t{font-family:"Archivo";font-weight:900;font-size:40px;font-variant-numeric:tabular-nums}
+.state{border:3px solid var(--ink);border-radius:10px;padding:4px 8px}
+.s-open{background:var(--success);color:#fff}.s-wait{background:var(--warning)}
+.s-done{background:var(--info)}.s-closed{background:var(--danger);color:#fff}
+.cards{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.search{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.search input{flex:1;min-width:200px;padding:10px 14px;border:3px solid var(--ink);border-radius:14px;background:var(--card)}
+.filter{padding:8px 14px;border:3px solid var(--ink);border-radius:12px;background:var(--card);cursor:pointer}
+.filter.on{background:var(--secondary);box-shadow:3px 3px 0 var(--ink)}
+.faq q{display:block}
+.faq details{border:3px solid var(--ink);border-radius:14px;background:var(--card);padding:14px;margin-bottom:12px;box-shadow:3px 3px 0 var(--ink)}
+.faq summary{cursor:pointer;font-weight:800;font-family:"Archivo"}
+footer.site{border-top:3px solid var(--ink);background:var(--card);margin-top:24px;padding:24px 0}
+.modal[hidden]{display:none}
+.modal{position:fixed;inset:0;z-index:60;background:rgba(30,58,44,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal .box{max-width:720px;width:100%;max-height:88vh;overflow:auto}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{border:3px solid var(--ink);border-radius:10px;background:var(--bg);padding:4px 10px;font-weight:700;font-variant-numeric:tabular-nums}
+.banner img{width:100%;aspect-ratio:16/7;object-fit:cover;display:block}
+.dots{display:flex;justify-content:center;gap:8px;border-top:3px solid var(--ink);background:var(--card);padding:8px}
+.dots button{width:12px;height:12px;border-radius:99px;border:2px solid var(--ink);background:var(--bg);cursor:pointer}
+.dots button.on{background:var(--primary)}
+.muted{color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap">
+    <a href="#beranda" class="row" style="gap:8px">
+      <img id="logo" alt="" hidden style="height:36px;border:3px solid var(--ink);border-radius:12px;background:#fff;padding:4px" />
+      <span class="display" id="brand" style="font-size:20px">PIKAT4D</span>
+    </a>
+    <nav class="desktop" id="navDesktop" aria-label="Navigasi utama"></nav>
+    <div class="actions">
+      <a id="btnRegister" class="btn primary press label" href="#daftar">Daftar</a>
+      <a id="btnLogin" class="btn sec press label" href="#masuk">Masuk</a>
+      <button class="burger nb sh-sm press" id="burger" aria-label="Buka menu">☰</button>
+    </div>
+  </div>
+  <div id="mobileNav"></div>
+</header>
+
+<div class="marquee" id="marquee" hidden><div class="marquee-track label" id="marqueeTrack"></div></div>
+
+<main id="beranda">
+  <section class="wrap" aria-label="Hero utama">
+    <div class="hero">
+      <div class="nb sh pad">
+        <div class="nb sh-sm banner" id="banner" hidden style="overflow:hidden;padding:0;margin-bottom:16px"></div>
+        <span class="chip label" id="heroChip">Prediksi pasaran aktif</span>
+        <h1 style="font-size:40px;line-height:1.05;margin:16px 0"><span id="heroT1">Prediksi Angka</span><br><span style="background:var(--secondary);padding:0 8px" id="heroT2">Semua Pasaran</span></h1>
+        <p class="muted" id="heroDesc" style="max-width:560px;line-height:1.6"></p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:16px">
+          <a href="#pasaran" class="btn primary press label" id="btnHero1">Lihat Pasaran</a>
+          <button class="btn sec press label" id="btnHero2">Pasaran Terdekat</button>
+        </div>
+        <div class="nb sh-sm" id="aboutBox" hidden style="background:var(--bg);padding:16px;margin-top:16px">
+          <div class="label muted" id="aboutTitle">Tentang</div>
+          <p id="aboutText" style="margin:4px 0 0;line-height:1.6"></p>
+        </div>
+      </div>
+      <aside class="nb sh pad" id="nextCard"></aside>
+    </div>
+  </section>
+
+  <section class="wrap" id="pasaran">
+    <h2 style="font-size:30px" id="marketTitle">Jadwal &amp; Prediksi Pasaran</h2>
+    <p class="muted" id="marketDesc" style="margin:6px 0 16px"></p>
+    <div class="search">
+      <input id="q" type="search" placeholder="Cari pasaran…" aria-label="Cari pasaran" />
+      <button class="filter on label" data-f="all">Semua</button>
+      <button class="filter label" data-f="open">Buka</button>
+      <button class="filter label" data-f="wait">Menunggu</button>
+      <button class="filter label" data-f="done">Selesai</button>
+      <button class="filter label" data-f="closed">Tutup</button>
+    </div>
+    <div class="cards" id="marketGrid"></div>
+  </section>
+
+  <section class="wrap" id="promo" hidden>
+    <h2 style="font-size:30px" id="promoTitle">Promo</h2>
+    <div class="cards" id="promoGrid" style="margin-top:16px"></div>
+  </section>
+
+  <section class="wrap faq" id="faq" hidden>
+    <h2 style="font-size:30px;margin-bottom:16px" id="faqTitle">FAQ</h2>
+    <div id="faqList"></div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="display" id="footerBrand" style="font-size:22px">PIKAT4D</div>
+    <p class="muted" id="footerText" style="margin:8px 0;line-height:1.6"></p>
+    <div class="chips" id="footerLinks" style="margin-top:12px"></div>
+    <div class="label muted" style="margin-top:16px" id="copyright"></div>
+  </div>
+</footer>
+
+<div class="modal" id="modal" hidden><div class="nb sh box pad" id="modalBox"></div></div>
+
+<script>
+/* ============ Konfigurasi Supabase (anon key aman untuk browser) ============ */
+var SUPABASE_URL = "https://mcyqojenrtpsviejxazf.supabase.co";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1jeXFvamVucnRwc3ZpZWp4YXpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2NTQ0NjksImV4cCI6MjEwMTIzMDQ2OX0.Fzv_7QrmwVqEMHDiOmbWkrOKJrL08wQEpCMwhECUTL8";
+
+/* ============ Util waktu WIB ============ */
+var DAY_NAMES = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+function wibParts(){
+  var w = new Date(Date.now() + 7*3600*1000);
+  return {
+    dayIndex: w.getUTCDay(),
+    dayName: DAY_NAMES[w.getUTCDay()],
+    dateKey: w.toISOString().slice(0,10),
+    totalSec: w.getUTCHours()*3600 + w.getUTCMinutes()*60 + w.getUTCSeconds()
+  };
+}
+function timeToSec(v){ var p = String(v||"00:00").split(":"); return (+p[0]||0)*3600 + (+p[1]||0)*60; }
+function fmt(sec){ sec = Math.max(0, Math.floor(sec));
+  var h=Math.floor(sec/3600), m=Math.floor(sec%3600/60), s=sec%60;
+  return [h,m,s].map(function(n){return String(n).padStart(2,"0");}).join(":"); }
+
+/* ============ Generator angka harian (deterministik) ============ */
+var SHIO = ["TIKUS","KERBAU","MACAN","KELINCI","NAGA","ULAR","KUDA","KAMBING","MONYET","AYAM","ANJING","BABI"];
+function hashString(v){ var h=1779033703 ^ v.length;
+  for(var i=0;i<v.length;i++){ h=Math.imul(h ^ v.charCodeAt(i),3432918353); h=(h<<13)|(h>>>19); }
+  h=Math.imul(h ^ (h>>>16),2246822507); h=Math.imul(h ^ (h>>>13),3266489909);
+  return (h ^ (h>>>16))>>>0; }
+function mulberry32(seed){ var s=seed; return function(){ s+=0x6d2b79f5; var t=s;
+  t=Math.imul(t ^ (t>>>15), t|1); t^= t + Math.imul(t ^ (t>>>7), t|61);
+  return ((t ^ (t>>>14))>>>0)/4294967296; }; }
+function shuffledDigits(rand){ var p=["0","1","2","3","4","5","6","7","8","9"];
+  for(var i=p.length-1;i>0;i--){ var j=Math.floor(rand()*(i+1)); var a=p[i]; p[i]=p[j]; p[j]=a; } return p; }
+function weightedPick(rand,pool,prio){ var bag=prio.concat(prio,prio,pool.slice(0,7),pool); return bag[Math.floor(rand()*bag.length)]; }
+function buildTop2D(rand,main,bbfs,pool){
+  var out=[], seen={};
+  function push(v){ if(!/^\d{2}$/.test(v)||seen[v]) return; seen[v]=1; out.push(v); }
+  [main[0]+main[1],main[2]+main[3],bbfs[4]+main[0],main[1]+bbfs[4],main[0]+main[2],main[3]+main[1],bbfs[4]+main[2],main[1]+main[0]].forEach(push);
+  var guard=0;
+  while(out.length<25 && guard++<500){
+    var a=weightedPick(rand,pool,bbfs), b=weightedPick(rand,pool,main);
+    if(out.length<10 && a===b){ for(var i=0;i<pool.length;i++){ if(pool[i]!==a){ b=pool[i]; break; } } }
+    push(a+b);
+  }
+  return out.slice(0,25);
+}
+function splitList(v){ if(!v||!String(v).trim()) return null;
+  var arr=String(v).split(/[\s,;|]+/).filter(Boolean);
+  arr=arr.filter(function(x,i){return arr.indexOf(x)===i;});
+  return arr.length?arr:null; }
+function getPack(market, parts, override){
+  var cycleIndex = Math.floor(parts.totalSec/(3*3600));
+  var seed = market.cycle3h
+    ? parts.dateKey+":cycle-"+cycleIndex+":"+market.id+":"+market.code
+    : parts.dateKey+":"+market.id+":"+market.code;
+  var rand = mulberry32(hashString(seed));
+  var pool = shuffledDigits(rand);
+  var main = pool.slice(0,4), bbfs = pool.slice(0,5), a4 = main.join("");
+  var top2d = buildTop2D(rand,main,bbfs,pool);
+  var pack = {
+    angka4d:a4, angka3d:a4.slice(1), angka2d:a4.slice(2),
+    mainDigits:main, bbfs:bbfs, colok:[main[0],bbfs[4]],
+    shio:SHIO[Math.floor(rand()*SHIO.length)], top2d:top2d, hot2d:top2d.slice(0,3),
+    as:a4[0], kop:a4[1], kepala:a4[2]+a4[3], ekor:a4[3],
+    mode: market.cycle3h ? "Reset Setelah Diundi • 3 Jam" : "Reset • 00.00 WIB"
+  };
+  if(!override) return pack;
+  if(override.angka4d && /^\d{4}$/.test(override.angka4d)){
+    var v=override.angka4d; pack.angka4d=v; pack.angka3d=override.angka3d||v.slice(1);
+    pack.angka2d=override.angka2d||v.slice(2); pack.as=v[0]; pack.kop=v[1]; pack.kepala=v[2]+v[3]; pack.ekor=v[3];
+  }
+  var m=splitList(override.main_digits); if(m) pack.mainDigits=m;
+  var b=splitList(override.bbfs); if(b) pack.bbfs=b;
+  var c=splitList(override.colok); if(c) pack.colok=c;
+  if(override.shio) pack.shio=String(override.shio).toUpperCase();
+  var t=splitList(override.top2d); if(t){ pack.top2d=t; pack.hot2d=t.slice(0,3); }
+  return pack;
+}
+function getStatus(market, parts){
+  var closeSec=timeToSec(market.close_time), drawSec=timeToSec(market.draw_time);
+  var base={closeTime:market.close_time, drawTime:market.draw_time};
+  var closed=(market.closed_days||"").toLowerCase();
+  if(closed && closed.indexOf(parts.dayName.toLowerCase())>=0)
+    return Object.assign(base,{state:"closed",label:"Tutup Hari Ini",phase:"Buka lagi besok",countdown:86400-parts.totalSec});
+  if(market.cycle3h){
+    var size=3*3600, next=(Math.floor(parts.totalSec/size)+1)*size;
+    return Object.assign(base,{state:"open",label:"Buka",phase:"Sesi berikutnya",countdown:next-parts.totalSec});
+  }
+  if(parts.totalSec<closeSec) return Object.assign(base,{state:"open",label:"Buka",phase:"Tutup dalam",countdown:closeSec-parts.totalSec});
+  if(parts.totalSec<drawSec) return Object.assign(base,{state:"wait",label:"Menunggu Undian",phase:"Diundi dalam",countdown:drawSec-parts.totalSec});
+  return Object.assign(base,{state:"done",label:"Selesai Diundi",phase:"Buka lagi dalam",countdown:86400-parts.totalSec+closeSec});
+}
+
+/* ============ Data CMS dari Supabase ============ */
+var FALLBACK_MARKETS = [
+  {id:"hksiang",name:"HK SIANG",code:"HKS",close_time:"10:30",draw_time:"11:00",open_days:"Setiap Hari"},
+  {id:"sydney",name:"SYDNEY",code:"SDY",close_time:"13:30",draw_time:"14:00",open_days:"Setiap Hari"},
+  {id:"singapore",name:"SINGAPORE",code:"SGP",close_time:"17:25",draw_time:"17:45",open_days:"Senin, Rabu, Kamis, Sabtu, Minggu",closed_days:"Selasa, Jumat"},
+  {id:"hongkong",name:"HONGKONG",code:"HK",close_time:"22:45",draw_time:"23:00",open_days:"Setiap Hari"}
+];
+var DEFAULT_NAV = [{label:"Beranda",url:"#beranda"},{label:"Pasaran",url:"#pasaran"},{label:"Promo",url:"#promo"},{label:"FAQ",url:"#faq"}];
+
+var DATA = {settings:{},banners:[],nav_links:[],markets:FALLBACK_MARKETS,predictions:[],promos:[],faqs:[],footer_links:[]};
+var state = {filter:"all", q:"", bannerIndex:0, modalMarket:null};
+
+function fetchPayload(){
+  return fetch(SUPABASE_URL+"/rest/v1/rpc/site_payload",{
+    method:"POST",
+    headers:{apikey:SUPABASE_ANON_KEY,Authorization:"Bearer "+SUPABASE_ANON_KEY,"Content-Type":"application/json"},
+    body:"{}"
+  }).then(function(r){ if(!r.ok) throw new Error("site_payload "+r.status); return r.json(); })
+   .then(function(raw){
+      var d = raw && typeof raw==="object" ? raw : {};
+      function list(k){ return Array.isArray(d[k]) ? d[k] : []; }
+      var markets = list("markets").filter(function(m){return m && m.id;});
+      DATA = {
+        settings: d.settings && typeof d.settings==="object" ? d.settings : {},
+        banners: list("banners"), nav_links: list("nav_links"),
+        markets: markets.length ? markets : FALLBACK_MARKETS,
+        predictions: list("predictions"), promos: list("promos"),
+        faqs: list("faqs"), footer_links: list("footer_links")
+      };
+   })
+   .catch(function(e){ console.warn("[CMS] gagal memuat data, memakai data bawaan.", e); });
+}
+
+/* ============ Render ============ */
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];}); }
+function el(id){ return document.getElementById(id); }
+function S(k,d){ return DATA.settings[k] || d || ""; }
+function isExternal(u){ return /^https?:/i.test(u||""); }
+function predFor(id){ return DATA.predictions.filter(function(p){return p.market_id===id;})[0]; }
+
+function renderChrome(){
+  var brand = S("brand_name") || S("site_title") || "PIKAT4D";
+  el("brand").textContent = brand; el("footerBrand").textContent = brand;
+  if(S("site_title")) document.title = S("site_title");
+  if(S("meta_description")) document.querySelector('meta[name=description]').setAttribute("content", S("meta_description"));
+  if(S("logo_url")){ el("logo").src = S("logo_url"); el("logo").alt = brand; el("logo").hidden = false; }
+
+  var links = DATA.nav_links.length ? DATA.nav_links : DEFAULT_NAV;
+  el("navDesktop").innerHTML = links.map(function(l){
+    return '<a class="label'+(l.highlight?'" style="border-color:var(--ink);background:var(--secondary);box-shadow:3px 3px 0 var(--ink)':'')+'" href="'+esc(l.url)+'"'+(isExternal(l.url)?' target="_blank" rel="noopener"':'')+'>'+esc(l.label)+'</a>';
+  }).join("");
+  el("mobileNav").innerHTML = links.map(function(l){
+    return '<a href="'+esc(l.url)+'"'+(isExternal(l.url)?' target="_blank" rel="noopener"':'')+'><span>'+esc(l.label)+'</span><span>›</span></a>';
+  }).join("");
+
+  el("btnRegister").href = S("register_url","#daftar"); el("btnRegister").textContent = S("register_label","Daftar");
+  el("btnLogin").href = S("login_url","#masuk"); el("btnLogin").textContent = S("login_label","Masuk");
+
+  var rt = (S("running_text")||"").trim();
+  if(rt && DATA.settings["running_text_active"] !== "false"){
+    el("marqueeTrack").innerHTML = [0,0,0,0].map(function(){return "<span>"+esc(rt)+"</span>";}).join("");
+    el("marquee").hidden = false;
+  } else el("marquee").hidden = true;
+
+  el("heroChip").textContent = S("hero_chip","Prediksi pasaran aktif");
+  el("heroT1").textContent = S("hero_title_line1","Prediksi Angka");
+  el("heroT2").textContent = S("hero_title_line2","Semua Pasaran");
+  el("heroDesc").textContent = S("hero_desc","Pantau jadwal tutup, jam undi, dan angka main seluruh pasaran dalam satu halaman. Data diperbarui langsung dari panel admin.");
+  el("btnHero1").textContent = S("hero_btn_primary","Lihat Pasaran");
+  el("btnHero2").textContent = S("hero_btn_secondary","Pasaran Terdekat");
+  if(S("about_text")){ el("aboutBox").hidden=false; el("aboutTitle").textContent=S("about_title","Tentang"); el("aboutText").textContent=S("about_text"); }
+
+  el("marketTitle").textContent = S("market_title","Jadwal & Prediksi Pasaran");
+  el("marketDesc").textContent = S("market_desc","Klik pasaran untuk melihat detail angka main, BBFS, colok, dan top 2D.");
+  el("promoTitle").textContent = S("promo_title","Promo");
+  el("faqTitle").textContent = S("faq_title","FAQ");
+  el("footerText").textContent = S("footer_text","");
+  el("copyright").textContent = S("copyright","© "+new Date().getFullYear()+" "+brand);
+  el("footerLinks").innerHTML = DATA.footer_links.map(function(l){
+    return '<a class="btn press label" style="background:'+(l.highlight?"var(--secondary)":"var(--bg)")+'" href="'+esc(l.url)+'"'+(isExternal(l.url)?' target="_blank" rel="noopener"':'')+'>'+esc(l.label)+'</a>';
+  }).join("");
+
+  renderBanner();
+  renderPromos();
+  renderFaqs();
+}
+
+function activeBanners(){ return DATA.banners.filter(function(b){return b.image_desktop_url||b.image_mobile_url;}); }
+function renderBanner(){
+  var list = activeBanners();
+  if(!list.length){ el("banner").hidden = true; return; }
+  el("banner").hidden = false;
+  var i = Math.min(state.bannerIndex, list.length-1), b = list[i];
+  var img = '<img src="'+esc(b.image_desktop_url||b.image_mobile_url)+'" alt="'+esc(b.alt_text||"Banner")+'" loading="lazy" />';
+  var media = b.link_url ? '<a href="'+esc(b.link_url)+'" target="_blank" rel="noopener">'+img+'</a>' : img;
+  var dots = list.length>1 ? '<div class="dots">'+list.map(function(_,k){return '<button data-i="'+k+'" class="'+(k===i?"on":"")+'" aria-label="Slide '+(k+1)+'"></button>';}).join("")+'</div>' : "";
+  el("banner").innerHTML = media+dots;
+  Array.prototype.forEach.call(el("banner").querySelectorAll(".dots button"), function(btn){
+    btn.onclick = function(){ state.bannerIndex = +btn.dataset.i; renderBanner(); };
+  });
+}
+
+function renderPromos(){
+  if(!DATA.promos.length){ el("promo").hidden = true; return; }
+  el("promo").hidden = false;
+  el("promoGrid").innerHTML = DATA.promos.map(function(p){
+    return '<article class="nb sh" style="overflow:hidden">'
+      + (p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title)+'" loading="lazy" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;border-bottom:3px solid var(--ink)" />':'')
+      + '<div class="pad">'
+      + (p.badge?'<span class="chip label" style="margin-bottom:8px">'+esc(p.badge)+'</span>':'')
+      + '<h3 style="font-size:20px;margin:8px 0">'+esc(p.title)+'</h3>'
+      + (p.description?'<p class="muted" style="margin:0 0 12px;line-height:1.6">'+esc(p.description)+'</p>':'')
+      + (p.link_url?'<a class="btn primary press label" href="'+esc(p.link_url)+'" target="_blank" rel="noopener">'+esc(p.cta_label||"Ambil Promo")+'</a>':'')
+      + '</div></article>';
+  }).join("");
+}
+
+function renderFaqs(){
+  if(!DATA.faqs.length){ el("faq").hidden = true; return; }
+  el("faq").hidden = false;
+  el("faqList").innerHTML = DATA.faqs.map(function(f){
+    return '<details><summary>'+esc(f.question)+'</summary><p class="muted" style="line-height:1.6">'+esc(f.answer)+'</p></details>';
+  }).join("");
+}
+
+function marketCard(m, st){
+  var pack = getPack(m, PARTS, predFor(m.id));
+  return '<article class="nb sh press" data-market="'+esc(m.id)+'">'
+    + '<div class="pad">'
+    + '<div class="row" style="justify-content:space-between;align-items:flex-start">'
+    + '<div><div class="display" style="font-size:22px">'+esc(m.name)+'</div>'
+    + '<div class="label muted" style="margin-top:4px">Tutup '+esc(st.closeTime)+' • Undi '+esc(st.drawTime)+' WIB</div></div>'
+    + '<span class="state label s-'+st.state+'">'+esc(st.label)+'</span></div>'
+    + '<div class="count" style="margin-top:12px"><div class="label">'+esc(st.phase)+'</div>'
+    + '<div class="t" data-count="'+esc(m.id)+'">'+fmt(st.countdown)+'</div></div>'
+    + '<div class="metrics" style="margin-top:12px">'
+    + metric("Angka 4D", pack.angka4d) + metric("Shio", pack.shio)
+    + metric("Angka Main", pack.mainDigits.join(" ")) + metric("Colok", pack.colok.join(" "))
+    + '</div></div></article>';
+}
+function metric(l,v){ return '<div class="metric"><div class="label muted">'+esc(l)+'</div><div class="v">'+esc(v)+'</div></div>'; }
+
+function renderMarkets(){
+  var q = state.q.toLowerCase();
+  var rows = DATA.markets.map(function(m){ return {m:m, st:getStatus(m,PARTS)}; })
+    .filter(function(r){ return (!q || r.m.name.toLowerCase().indexOf(q)>=0 || String(r.m.code||"").toLowerCase().indexOf(q)>=0)
+      && (state.filter==="all" || r.st.state===state.filter); })
+    .sort(function(a,b){ return a.st.countdown-b.st.countdown; });
+  el("marketGrid").innerHTML = rows.length ? rows.map(function(r){return marketCard(r.m,r.st);}).join("")
+    : '<div class="nb sh pad muted">Tidak ada pasaran yang cocok.</div>';
+  Array.prototype.forEach.call(el("marketGrid").querySelectorAll("[data-market]"), function(card){
+    card.onclick = function(){ openModal(card.dataset.market); };
+  });
+}
+
+function renderNext(){
+  var ranked = DATA.markets.map(function(m){ return {m:m, st:getStatus(m,PARTS)}; })
+    .sort(function(a,b){ return a.st.countdown-b.st.countdown; });
+  var next = ranked.filter(function(r){return r.st.state==="open";})[0] || ranked[0];
+  if(!next){ el("nextCard").innerHTML=""; return; }
+  var pack = getPack(next.m, PARTS, predFor(next.m.id));
+  el("nextCard").innerHTML =
+      '<div class="row" style="justify-content:space-between;align-items:flex-start">'
+    + '<div><div class="label muted">Pasaran Terdekat</div>'
+    + '<div class="display" style="font-size:28px">'+esc(next.m.name)+'</div>'
+    + '<div class="label muted" style="margin-top:4px">Tutup '+esc(next.st.closeTime)+' • Diundi '+esc(next.st.drawTime)+' WIB</div></div>'
+    + '<span class="state label s-'+next.st.state+'">'+esc(next.st.label)+'</span></div>'
+    + '<div class="count" style="margin-top:16px"><div class="label">'+esc(next.st.phase)+'</div>'
+    + '<div class="t" data-count-next>'+fmt(next.st.countdown)+'</div></div>'
+    + '<div class="metrics" style="margin-top:16px">'
+    + metric("Angka 4D", pack.angka4d) + metric("Shio", pack.shio)
+    + metric("Angka Main", pack.mainDigits.join(" ")) + metric("Colok", pack.colok.join(" "))
+    + '</div><div class="label muted" style="margin-top:12px">'+esc(PARTS.dayName+" • "+PARTS.dateKey)+'</div>';
+  el("btnHero2").onclick = function(){ openModal(next.m.id); };
+}
+
+function openModal(id){
+  var m = DATA.markets.filter(function(x){return x.id===id;})[0];
+  if(!m) return;
+  state.modalMarket = id;
+  var st = getStatus(m,PARTS), pack = getPack(m,PARTS,predFor(m.id));
+  el("modalBox").innerHTML =
+      '<div class="row" style="justify-content:space-between;align-items:flex-start">'
+    + '<div><div class="display" style="font-size:26px">'+esc(m.name)+'</div>'
+    + '<div class="label muted" style="margin-top:4px">'+esc(m.code||"")+' • Tutup '+esc(st.closeTime)+' • Undi '+esc(st.drawTime)+' WIB</div></div>'
+    + '<button class="btn sec press label" id="modalClose">Tutup</button></div>'
+    + '<div class="count" style="margin-top:16px"><div class="label">'+esc(st.phase)+'</div><div class="t" data-count-modal>'+fmt(st.countdown)+'</div></div>'
+    + '<div class="metrics" style="margin-top:16px">'
+    + metric("Angka 4D",pack.angka4d)+metric("Angka 3D",pack.angka3d)
+    + metric("Angka 2D",pack.angka2d)+metric("Shio",pack.shio)
+    + metric("AS",pack.as)+metric("KOP",pack.kop)
+    + metric("Kepala",pack.kepala)+metric("Ekor",pack.ekor)+'</div>'
+    + block("Angka Main",pack.mainDigits)+block("BBFS",pack.bbfs)+block("Colok",pack.colok)
+    + block("Top 2D",pack.top2d)+block("Hot 2D",pack.hot2d)
+    + (m.open_days?'<div class="label muted" style="margin-top:12px">Hari Buka: '+esc(m.open_days)+'</div>':'')
+    + (m.closed_days?'<div class="label muted">Libur: '+esc(m.closed_days)+'</div>':'')
+    + (m.note?'<p class="muted" style="margin-top:8px">'+esc(m.note)+'</p>':'')
+    + '<div class="label muted" style="margin-top:8px">'+esc(pack.mode)+'</div>';
+  el("modal").hidden = false;
+  el("modalClose").onclick = closeModal;
+}
+function block(title,list){
+  return '<div style="margin-top:12px"><div class="label muted" style="margin-bottom:6px">'+esc(title)+'</div>'
+    + '<div class="chips">'+list.map(function(v){return "<span>"+esc(v)+"</span>";}).join("")+'</div></div>';
+}
+function closeModal(){ state.modalMarket=null; el("modal").hidden = true; }
+el("modal").addEventListener("click", function(e){ if(e.target===el("modal")) closeModal(); });
+document.addEventListener("keydown", function(e){ if(e.key==="Escape") closeModal(); });
+
+/* ============ Tick countdown tiap detik ============ */
+var PARTS = wibParts();
+function tick(){
+  PARTS = wibParts();
+  DATA.markets.forEach(function(m){
+    var st = getStatus(m,PARTS);
+    var node = el("marketGrid").querySelector('[data-count="'+m.id+'"]');
+    if(node) node.textContent = fmt(st.countdown);
+  });
+  var n = el("nextCard").querySelector("[data-count-next]");
+  if(n){
+    var ranked = DATA.markets.map(function(m){return {m:m,st:getStatus(m,PARTS)};}).sort(function(a,b){return a.st.countdown-b.st.countdown;});
+    var next = ranked.filter(function(r){return r.st.state==="open";})[0] || ranked[0];
+    if(next) n.textContent = fmt(next.st.countdown);
+  }
+  if(state.modalMarket){
+    var mm = DATA.markets.filter(function(x){return x.id===state.modalMarket;})[0];
+    var mn = el("modalBox").querySelector("[data-count-modal]");
+    if(mm && mn) mn.textContent = fmt(getStatus(mm,PARTS).countdown);
+  }
+}
+
+/* ============ Interaksi ============ */
+el("burger").onclick = function(){ var n = el("mobileNav"); n.style.display = n.style.display==="block" ? "none" : "block"; };
+el("q").oninput = function(e){ state.q = e.target.value; renderMarkets(); };
+Array.prototype.forEach.call(document.querySelectorAll(".filter"), function(b){
+  b.onclick = function(){
+    Array.prototype.forEach.call(document.querySelectorAll(".filter"), function(x){ x.classList.remove("on"); });
+    b.classList.add("on"); state.filter = b.dataset.f; renderMarkets();
+  };
+});
+
+function renderAll(){ PARTS = wibParts(); renderChrome(); renderNext(); renderMarkets(); }
+
+renderAll();
+fetchPayload().then(renderAll);
+setInterval(tick, 1000);
+/* auto-slide banner */
+setInterval(function(){ var l=activeBanners(); if(l.length>1){ state.bannerIndex=(state.bannerIndex+1)%l.length; renderBanner(); } }, 5000);
+/* muat ulang data dari admin tiap 60 detik */
+setInterval(function(){ fetchPayload().then(renderAll); }, 60000);
+</script>
+</body>
+</html>

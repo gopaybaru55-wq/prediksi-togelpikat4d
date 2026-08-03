@@ -10051,6 +10051,29 @@ if(Object.keys(byMarket).length && typeof window.getPredictionPack === 'function
   </style>
   <!-- ===== END NEOBRUTALISM SKIN v2 ===== -->
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  var CFG = window.SUPABASE_CONFIG;
+  if(!CFG || !window.supabase) return;
+  var sb = window.supabase.createClient(CFG.url, CFG.anonKey);
+  var timer = null;
+
+  function scheduleReload(){
+    clearTimeout(timer);
+    timer = setTimeout(function(){ location.reload(); }, 800); // debounce
+  }
+
+  sb.channel('cms-live')
+    .on('postgres_changes', { event: '*', schema: 'public' }, function(payload){
+      console.log('[CMS] perubahan:', payload.table, payload.eventType);
+      scheduleReload();
+    })
+    .subscribe(function(status){ console.log('[CMS] realtime:', status); });
+})();
+</script>
+
+
 </body>
 
 </html>

@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -7062,25 +7063,39 @@ const BASE_MARKETS = (CMS_DATA.markets || []).length
       };
     }
 
-    function pruneDailyCache(activeDateKey){
-      for(const key of dailyPackCache.keys()){
-        if(!key.startsWith(`${activeDateKey}:`)) dailyPackCache.delete(key);
-      }
-      for(const key of wuhanPackCache.keys()){
-        if(!key.startsWith(`${activeDateKey}:`)) wuhanPackCache.delete(key);
-      }
+    function pruneDailyCache(){
+      /* Cache dibiarkan kecil; kunci lama otomatis tidak terpakai lagi
+         karena seed prediksi berganti setiap pasaran selesai result. */
+      if(dailyPackCache.size > 400) dailyPackCache.clear();
+      if(wuhanPackCache.size > 400) wuhanPackCache.clear();
+    }
+
+    /* Kunci siklus prediksi per pasaran.
+       Prediksi TIDAK lagi terikat tanggal, melainkan pada jam DIUNDI (result)
+       masing-masing pasaran. Begitu jam result terlewat, kunci berganti
+       sehingga seluruh angka prediksi pasaran itu langsung diacak ulang
+       secara otomatis (tanpa perlu diupdate dari halaman admin). */
+    function getDrawCycleKey(market, nowParts = getWIBNowParts()){
+      const drawSec = hhmmToSec(market.draw);
+      const base = new Date(Date.UTC(nowParts.year, nowParts.month - 1, nowParts.day));
+      /* Sebelum jam result hari ini => masih siklus dari result kemarin. */
+      if(nowParts.totalSec < drawSec) base.setUTCDate(base.getUTCDate() - 1);
+      const y = base.getUTCFullYear();
+      const m = String(base.getUTCMonth() + 1).padStart(2,'0');
+      const d = String(base.getUTCDate()).padStart(2,'0');
+      return `${y}-${m}-${d}@${market.draw}`;
     }
 
     function getDailyNumberPack(market, nowParts = getWIBNowParts()){
-      const dailyKey = getDateKeyWIB(nowParts);
-      const cacheKey = `${dailyKey}:${market.id}:${market.code}`;
+      const cycleKey = getDrawCycleKey(market, nowParts);
+      const cacheKey = `${cycleKey}:${market.id}:${market.code}`;
 
       if(dailyPackCache.has(cacheKey)) return dailyPackCache.get(cacheKey);
 
       const pack = {
         ...createPredictionPack(cacheKey),
-        predictionMode:'Reset • 00.00 WIB',
-        predictionKey:dailyKey
+        predictionMode:`Acak Otomatis • Setelah Result ${market.draw}`,
+        predictionKey:cycleKey
       };
 
       dailyPackCache.set(cacheKey, pack);
@@ -7105,7 +7120,7 @@ const BASE_MARKETS = (CMS_DATA.markets || []).length
 
       const pack = {
         ...createPredictionPack(cacheKey),
-        predictionMode:'Reset Setelah Diundi • 3 Jam',
+        predictionMode:'Acak Otomatis • Setelah Diundi (3 Jam)',
         predictionKey:cycleKey
       };
 
@@ -7113,9 +7128,54 @@ const BASE_MARKETS = (CMS_DATA.markets || []).length
       return pack;
     }
 
-    function getPredictionPack(market, nowParts = getWIBNowParts()){
-      return market.cycle3h ? getWuhanNumberPack(market, nowParts) : getDailyNumberPack(market, nowParts);
+    /* ---------- Override manual dari Admin Panel ----------
+       window.__PRED_OVERRIDES diisi oleh CMS applier (lihat bagian bawah file).
+       Selama admin mengisi prediksi & is_active = true, angka manual dipakai.
+       Jika admin mengosongkan / menonaktifkan (atau auto_rotate = true),
+       angka kembali diacak otomatis setiap pasaran selesai result. */
+    function splitPredList(value){
+      if(Array.isArray(value)) return value.map(String).filter(Boolean);
+      if(typeof value !== 'string' || !value.trim()) return null;
+      return value.split(/[\s,;|]+/).filter(Boolean);
     }
+
+    function applyAdminOverride(market, pack){
+      const store = window.__PRED_OVERRIDES;
+      if(!store || !market) return pack;
+      const ov = store[market.id] || store[market.code];
+      if(!ov || ov.is_active === false || ov.auto_rotate === true) return pack;
+
+      const out = { ...pack, predictionMode:'Diatur Admin (Manual)' };
+      let touched = false;
+
+      if(ov.angka4d && /^\d{4}$/.test(String(ov.angka4d))){
+        const a = String(ov.angka4d);
+        out.angka4d = a;
+        out.angka3d = ov.angka3d || a.slice(1);
+        out.angka2d = ov.angka2d || a.slice(2);
+        out.as = a[0];
+        out.kop = a[1];
+        out.kepala = `${a[2]}${a[3]}`;
+        out.ekor = a[3];
+        out.mainDigits = a.split('');
+        touched = true;
+      }
+      const main = splitPredList(ov.main_digits); if(main && main.length){ out.mainDigits = main; touched = true; }
+      const bbfs = splitPredList(ov.bbfs);        if(bbfs && bbfs.length){ out.bbfs = bbfs; touched = true; }
+      const colok = splitPredList(ov.colok);      if(colok && colok.length){ out.colok = colok; touched = true; }
+      if(ov.shio){ out.shio = String(ov.shio).toUpperCase(); touched = true; }
+      const top2d = splitPredList(ov.top2d);
+      if(top2d && top2d.length){ out.top2d = top2d; out.hot2d = top2d.slice(0, 3); touched = true; }
+
+      return touched ? out : pack;
+    }
+
+    function getPredictionPack(market, nowParts = getWIBNowParts()){
+      const pack = market.cycle3h ? getWuhanNumberPack(market, nowParts) : getDailyNumberPack(market, nowParts);
+      return applyAdminOverride(market, pack);
+    }
+
+    window.getPredictionPack = getPredictionPack;
 
     function getNextThreeHourMark(nowSec){
       const marks = [0,3,6,9,12,15,18,21,24].map(hour => hour * 3600);
@@ -7194,8 +7254,7 @@ const BASE_MARKETS = (CMS_DATA.markets || []).length
     }
 
     function enrichMarkets(nowParts = getWIBNowParts()){
-      const dailyKey = getDateKeyWIB(nowParts);
-      pruneDailyCache(dailyKey);
+      pruneDailyCache();
 
       return BASE_MARKETS.map(item => ({
         ...item,
@@ -9722,52 +9781,22 @@ const BASE_MARKETS = (CMS_DATA.markets || []).length
     }
 
     /* ---------- Override prediksi dari Admin Panel ---------- */
-var byMarket = {};
-(CMS.predictions || []).forEach(function(p){
-  if(p && p.market_id && p.is_active !== false) byMarket[p.market_id] = p;
-});
+    /* Data admin hanya disimpan ke window.__PRED_OVERRIDES.
+       Aplikasi utama (applyAdminOverride) yang memutuskan:
+       - ada isian admin & aktif  -> pakai angka manual
+       - kosong / non-aktif / auto_rotate -> angka acak otomatis
+         yang berganti sendiri setiap pasaran selesai result. */
+    var overrides = {};
+    (CMS.predictions || []).forEach(function(p){
+      if(!p) return;
+      var key = p.market_id || p.market_code || p.code;
+      if(key) overrides[key] = p;
+    });
+    window.__PRED_OVERRIDES = overrides;
 
-if(Object.keys(byMarket).length && typeof window.getPredictionPack === 'function'){
-  var splitList = function(v){
-    if(Array.isArray(v)) return v.map(String);
-    if(typeof v !== 'string' || !v.trim()) return null;
-    return v.split(/[\s,;|]+/).filter(Boolean);
-  };
-
-  var applyOverride = function(pack, ov){
-    if(!pack || !ov) return pack;
-    if(ov.angka4d && /^\d{4}$/.test(ov.angka4d)){
-      pack.angka4d = ov.angka4d;
-      pack.angka3d = ov.angka3d || ov.angka4d.slice(1);
-      pack.angka2d = ov.angka2d || ov.angka4d.slice(2);
-      pack.as      = ov.angka4d[0];
-      pack.kop     = ov.angka4d[1];
-      pack.kepala  = ov.angka4d[2] + ov.angka4d[3];
-      pack.ekor    = ov.angka4d[3];
+    if(typeof window.performDashboardSync === 'function'){
+      try{ window.performDashboardSync(true); }catch(e){ console.warn('[CMS] sync ulang gagal', e); }
     }
-    var main = splitList(ov.main_digits); if(main && main.length) pack.mainDigits = main;
-    var bbfs = splitList(ov.bbfs);        if(bbfs && bbfs.length) pack.bbfs = bbfs;
-    var colok = splitList(ov.colok);      if(colok && colok.length) pack.colok = colok;
-    if(ov.shio) pack.shio = String(ov.shio).toUpperCase();
-    var top2d = splitList(ov.top2d);
-    if(top2d && top2d.length){ pack.top2d = top2d; pack.hot2d = top2d.slice(0, 3); }
-    return pack;
-  };
-
-  // Tambal SATU pintu masuk: harian (getDailyNumberPack) & 3 jam (getWuhanNumberPack)
-  var originalGetPack = window.getPredictionPack;
-  window.getPredictionPack = function(market, nowParts){
-    var pack = originalGetPack.apply(this, arguments);
-    var ov = market && byMarket[market.id];
-    if(!ov) return pack;
-    // salin dulu supaya cache siklus tidak ikut termutasi permanen
-    return applyOverride(Object.assign({}, pack), ov);
-  };
-
-  if(typeof window.performDashboardSync === 'function'){
-    try{ window.performDashboardSync(true); }catch(e){ console.warn('[CMS] sync ulang gagal', e); }
-  }
-}
 
   })();
   </script>

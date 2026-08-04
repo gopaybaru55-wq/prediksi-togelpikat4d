@@ -7058,7 +7058,7 @@ const BASE_MARKETS = (CMS_DATA.markets || []).length
         hot2d,
         as: angka4d[0],
         kop: angka4d[1],
-        kepala: `${angka4d[2]}${angka4d[3]}`,
+        kepala: angka4d[2],
         ekor: angka4d[3]
       };
     }
@@ -7155,7 +7155,7 @@ const BASE_MARKETS = (CMS_DATA.markets || []).length
         out.angka2d = ov.angka2d || a.slice(2);
         out.as = a[0];
         out.kop = a[1];
-        out.kepala = `${a[2]}${a[3]}`;
+        out.kepala = a[2];
         out.ekor = a[3];
         out.mainDigits = a.split('');
         touched = true;
